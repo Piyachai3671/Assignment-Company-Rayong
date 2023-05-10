@@ -1,4 +1,14 @@
-# Assignment-Company-Rayong
+# Assignment-Company-Rayongg
+เว็บแอปพลิเคชันระบบเพิ่มพนักงาน และจัดการพนักงาน เป็นระบบที่เริ่มพัฒนาตั้งแต่วันที่ 5 พฤษภาคม 2566 จนถึงวันที่ 8 พฤษภาคม 2566 ใช้สำหรับส่งแบบทดสอบ บริษัทแห่งหนึ่งในจังหวัดระยอง
+
+เครื่องมือที่ใช้
+
+Framework : Blazor
+HTML CSS Boostrap5 RadzenComponent สำหรับการออกแบบหน้า UX/UI
+C# สำหรับควบคุมการทำงาน
+SQL Server 2014 สำหรับบันทึกข้อมูล
+SoucrceTree Github จุดเซฟ
+
 หน้าแรก เป็นหน้าสำหรับจัดการสมาชิกพนักงาน สามารถทำการเพิ่มสมาชิก ลบ และแก้ไขได้ 
  ![image](https://github.com/Piyachai3671/Assignment-Company-Rayong/assets/105155094/469e0dd3-6120-4ad8-bd3a-44f175363c32)
  
