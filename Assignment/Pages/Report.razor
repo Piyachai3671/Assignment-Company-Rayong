@@ -1,0 +1,117 @@
+﻿@page "/report"
+@using Assignment.Data.Models
+@using Assignment.Data.Services
+@inject NotificationService notificationservice
+@inject EmployeeService employeeService
+@inject CompanyService companyService
+<PageTitle>Report</PageTitle>
+<div class="row">
+	@*<div class="col-lg-2">
+	<div class="form-check mb-3 mt-0">
+	<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" @onclick="OnCheckAll">
+	<label class="form-check-label" for="flexCheckDefault">
+	เลือกทั้งหมด
+	</label>
+	</div>
+	</div>*@
+	<div class="card">
+		<div class="card-header" style="text-align:center;">
+			<h1>รายงานพนักงาน</h1>
+
+		</div>
+		<div class="card-body">
+			@*<div class="col-lg-3">
+			<label>แสดงรายการ</label>
+			<select style="width:60px;"  @bind="PageSizeSelect5">5
+			<option value="@PageSize5">5</option>
+			<option value="@PageSize10">10</option>
+			<option value="@PageSize20">20</option>
+			</select>
+			</div>*@
+
+			<RadzenDataGrid FilterMode="FilterMode.Simple"
+							AllowFiltering="true" AllowPaging="true" AllowSorting="true" AllowColumnResize="true"
+							PageSize="@PageSizeSelect5" Data="@ListEmployee" TItem="Employee" ColumnWidth="150px"
+							FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+							LogicalFilterOperator="LogicalFilterOperator.Or" style="--rz-grid-header-background-color:;
+						--rz-grid-hover-background-color: blue;
+						--rz-grid-hover-color: red;
+						--rz-grid-cell-color: black;">
+
+				<Columns>
+					@*<RadzenDataGridColumn TItem="Employee " Title="" TextAlign="TextAlign.Center">
+					<Template Context="data">
+					<div class="form-check ms-3">
+					<input class="form-check-input" type="checkbox" @bind="data.ReportCheck" >
+					</div>
+					</Template>
+					</RadzenDataGridColumn>*@
+
+					@*<RadzenDataGridColumn TItem="Employee " Title="ดูรายละเอียดเพิ่มเติม" TextAlign="TextAlign.Center">
+					<Template Context="data">
+					<RadzenButton Click=@(args => OpenOrderBillPage(data.ReportID))
+					ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="pageview" Class="m-1" /> @*ปุ่มดูรายละเอียด
+					</Template>
+					</RadzenDataGridColumn>*@
+					<RadzenDataGridColumn TItem="Employee" Property="IDMember5" Title="รหัสพนักงาน">
+					</RadzenDataGridColumn>
+					<RadzenDataGridColumn TItem="Employee" Property="Name" Title="ชื่อพนักงาน">
+						<FooterTemplate>
+
+							พนักงานทั้งหมด : <b>@ListEmployee.Count()</b>คน
+						</FooterTemplate>
+					</RadzenDataGridColumn>
+					<RadzenDataGridColumn TItem="Employee" Title="บริษัท" Property="NameCompany"
+										  Type="typeof(IEnumerable<string>)" TextAlign="TextAlign.Center"
+										  FilterValue="@selectedCompany" FilterOperator="FilterOperator.Contains"
+										  LogicalFilterOperator="LogicalFilterOperator.Or">
+						<FilterTemplate>
+							<RadzenDropDown @bind-Value=@selectedCompany Style="width:100%;"
+											Data="@ListCompanyName" AllowClear="true" Multiple="true" />
+						</FilterTemplate>
+					</RadzenDataGridColumn>
+				</Columns>
+
+			</RadzenDataGrid>
+		</div>
+
+	</div>
+
+</div>
+@code {
+	public List<Employee> ListEmployee = new List<Employee>();
+	public List<Company> ListCompany = new List<Company>();
+	public List<string> ListCompanyName;
+	protected override async Task OnInitializedAsync()
+	{
+		var Members = await employeeService.GetEmployeeAsync();
+		foreach (var Member in Members)
+		{
+			ListEmployee.Add(new Employee().ToUi(Member));
+		}
+
+		var Companys = await companyService.GetEmployeeAsync();
+		foreach (var Company in Companys)
+		{
+			ListCompany.Add(new Company().ToUi(Company));
+		}
+		ListCompanyName = ListCompany.Select(c => c.Name).ToList();
+
+	}
+	IEnumerable<string> selectedCompany;
+	int PageSizeSelect5 = 5;
+	private bool CheckAll = false;
+	private void OnCheckAll()
+	{
+
+		CheckAll = !CheckAll;
+		if (CheckAll == true)
+		{
+
+		}
+		if (CheckAll == false)
+		{
+
+		}
+	}
+	}

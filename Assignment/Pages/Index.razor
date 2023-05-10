@@ -1,0 +1,229 @@
+﻿@page "/"
+@using Assignment.Data.Models
+@using Assignment.Data.Services
+@inject NotificationService notificationservice
+@inject EmployeeService employeeService
+@inject CompanyService companyService
+<PageTitle>จัดการพนักงาน</PageTitle>
+
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex">
+					<h3 class="flex-grow-1">พนักงานบริษัท</h3>
+
+					<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">เพิ่มพนักงาน</button>
+
+				</div>
+
+			</div>
+		</div>
+
+
+	</div>
+	<div class="card-body">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>รหัสพนักงาน</th>
+					<th>ชื่อพนักงาน</th>
+					<th>ชื่อบริษัท</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var employee in ListEmployee)
+				{
+					<tr>
+						<th>@employee.IDMember5</th>
+						<th>@employee.Name</th>
+						<th>@employee.NameCompany</th>
+						<th>
+							<button class="btn btn-warning me-2" @onclick="()=>SentValue(employee)" data-bs-toggle="modal" data-bs-target="#ModalEdit">แก้ไข</button>
+							<button class="btn btn-danger" @onclick="()=>SentValue(employee)" data-bs-toggle="modal" data-bs-target="#ModalDelete">ลบ</button>
+						</th>
+					</tr>
+
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="modal fade" id="ModalDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel"><i class="fa-sharp fa-solid fa-circle-check text-success"></i> กรุณายืนยันคำสั่ง</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="" style="text-align:center;">
+					คุณต้องการที่จะลบพนักงาน @ValueEmployee.Name ใช่ หรือ ไม่ ?
+				</div>
+
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+				<button type="button" class="btn btn-success" data-bs-dismiss="modal" @onclick="()=>OnDeleteEmployee(ValueEmployee)">ยืนยัน</button>
+			</div>
+		</div>
+	</div>
+</div>
+<CompanyHome></CompanyHome>
+<div class="modal fade" id="ModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">แก้ไขข้อมูลพนักงาน</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+
+				<EditForm Model="@ValueEmployee">
+					<DataAnnotationsValidator />
+					<ValidationSummary />
+
+
+					<div class="form-group mt-2">
+						<label for="productname">ชื่อพนักงาน</label>
+						<InputText @bind-Value="ValueEmployee.Name" type="text" class="form-control mt-2" placeholder=" " />
+						<ValidationMessage For="(()=>ValueEmployee.Name)" />
+					</div>
+
+					<label class="mt-2">
+						บริษัท:
+						<InputSelect @bind-Value="ValueEmployee.NameCompany" style="height:30px; width:150px;">
+							<option value="">เลือกบริษัทที่สังกัด</option>
+							<option value="Pan Innovation">Pan Innovation</option>
+							<option value="Pl Industry">Pl Industry</option>
+							<option value="Creative Polymers">Creative Polymers</option>
+							<option value="Chemical Innovation">Chemical Innovation</option>
+
+						</InputSelect>
+						<ValidationMessage For="(()=>ValueEmployee.NameCompany)" />
+					</label>
+
+				</EditForm>
+
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="OnClickEditEmployee">บันทึก</button>
+			</div>
+		</div>
+	</div>
+</div>
+<FromAddMember GetEmployeeID="OnMemberEmployee"></FromAddMember>
+
+@code {
+	public List<Employee> ListEmployee = new List<Employee>();
+	public List<Company> ListCompany = new List<Company>();
+	private Employee Member = new();
+	private Company MemberCompany = new();
+	private Employee? ValueEmployee = new();
+	private Employee? ValueEmployeeNoShowData = new();
+
+	private Company ValueCompany = new();
+	protected override async Task OnInitializedAsync()
+	{
+		var Members = await employeeService.GetEmployeeAsync();
+		foreach (var Member in Members)
+		{
+			ListEmployee.Add(new Employee().ToUi(Member));
+		}
+
+	}
+	private Task OnMemberEmployee(Employee id)
+	{
+
+		ListEmployee.Add(id);
+		return Task.CompletedTask;
+
+	}
+	private void SentValue(Employee? ID)
+	{
+		ValueEmployee = ID;
+		ValueEmployeeNoShowData = ValueEmployee;
+	}
+	private async Task OnDeleteEmployee(Employee id)
+	{
+		ListEmployee.Remove(id); //ลบUI
+		var DeleteEmployee = new Employee().ToTable(id);//ลบในSQL
+		employeeService.DeleteEmployee(DeleteEmployee);
+
+		//var DeleteMemberCompany = new Company().ToTable(idcompany);//ลบในSQL
+		//companyService.DeleteCompany(DeleteMemberCompany);
+		//ShowNotificationDeleteemp();
+	}
+	private void OnClickEditEmployee()
+	{
+		string InputName = ValueEmployee.Name;
+		string InputCompany = ValueEmployee.NameCompany;
+		if (ValueEmployee == null) return;
+		if (ValueEmployee.Name == null || ValueEmployee.NameCompany == null || ValueEmployee.NameCompany == "")
+		{
+			ShowNotificationErrorInput();
+			return;
+		}
+		if (InputName.Length < 3 || InputName.Length > 30)
+		{
+			ShowNotificationErrorInput();
+			return;
+		}
+		if (ValueEmployee.Name != null || ValueEmployee.NameCompany != null)
+		{
+			@foreach (var Employee in ListEmployee.FindAll(e => e.IDEmployee == ValueEmployee.IDEmployee))
+			{
+				Employee.Name = ValueEmployee.Name;
+				Employee.NameCompany = ValueEmployee.NameCompany;
+
+				var a = new Employee().ToTable(Employee); //นำค่ามาเก็บใน a แต่ยังไม่บันทึกข้อมูล
+				employeeService.EditEmployee(a); //บันทึกข้อมูล
+				ShowNotificationEditSuccess();
+
+			}
+		}
+	}
+	private void ShowNotificationDeleteemp()
+	{
+		var a = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "พนักงาน" + ValueEmployee.Name + " ถูกลบเรียบร้อยแล้ว",
+				Detail = "",
+				Duration = 2700,
+				CloseOnClick = true,
+				Payload = DateTime.Now
+			};
+		notificationservice.Notify(a);
+	}
+	private void ShowNotificationErrorInput()
+	{
+		var a = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "กรูณากรอกข้อมูลให้ถูกต้อง",
+				Detail = "",
+				Duration = 2700,
+				CloseOnClick = true,
+				Payload = DateTime.Now
+			};
+		notificationservice.Notify(a);
+	}
+	private void ShowNotificationEditSuccess()
+	{
+		var a = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "ระบบทำการบันทึกการแก้ไขเรียบร้อยแล้ว",
+				Detail = "",
+				Duration = 2700,
+				CloseOnClick = true,
+				Payload = DateTime.Now
+			};
+		notificationservice.Notify(a);
+	}
+
+}

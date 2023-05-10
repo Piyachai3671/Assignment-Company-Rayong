@@ -1,0 +1,83 @@
+﻿@using Assignment.Data.Models
+@using Assignment.Data.Services
+@inject NotificationService notificationservice
+@inject EmployeeService employeeService
+@inject CompanyService companyService
+
+<div class="container">
+	<div class="row">
+		@foreach (var company in ListCompany)
+		{
+			<div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 col-xl-4 col-xxl-4 mt-3">
+				<div class="item">
+					<div class="position-re o-hidden img-hover-zoom ">
+						<img class="" style="width:100%; height:500px; object-fit:cover;" src="img/fac2.jpg">
+						<div class="con">
+							<h5>
+								<a href="#">
+									@company.Name
+								</a>
+							</h5>
+							<div class="line"></div>
+							<div class="row facilities">
+								<div class="col-md-7">
+									<ul>
+										<li>สมาชิกทั้งหมด : @ListEmployee.FindAll(e=>e.NameCompany == company.Name).Count() คน</li>
+									</ul>
+								</div>
+								<div class="col-md-5 text-end">
+									<div class="permalink">
+										<a href="#">
+											Details
+											<i class="fa-solid fa-arrow-right"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			@*<div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 col-xl-4 col-xxl-4">
+		<div class="card">
+		<div class="card-body">
+		<div class="img-size">
+		<img class=" " src="img/fac1.jpg" />
+		</div>
+
+		</div>
+		<div class="card-footer">
+		<h3>@company.Name</h3>
+		<p>สมาชิกทั้งหมด : @ListEmployee.FindAll(e=>e.NameCompany == company.Name).Count() คน</p>
+		</div>
+		</div>
+		</div>*@
+		}
+
+
+	</div>
+
+</div>
+@code {
+	public List<Employee> ListEmployee = new List<Employee>();
+	public List<Company> ListCompany = new List<Company>();
+
+	protected override async Task OnInitializedAsync()
+	{
+
+		var Members = await employeeService.GetEmployeeAsync();
+		foreach (var Member in Members)
+		{
+			ListEmployee.Add(new Employee().ToUi(Member));
+		}
+
+		var Companys = await companyService.GetEmployeeAsync();
+		foreach (var Company in Companys)
+		{
+			ListCompany.Add(new Company().ToUi(Company));
+		}
+
+
+
+	}
+}

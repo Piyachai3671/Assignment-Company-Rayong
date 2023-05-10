@@ -1,0 +1,190 @@
+﻿@using Assignment.Data.Models
+@using Assignment.Data.Services
+@inject NotificationService notificationservice
+@inject EmployeeService employeeService
+@inject CompanyService companyService
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">เพิ่มพนักงาน</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<EditForm Model="@Member">
+					<DataAnnotationsValidator />
+					<ValidationSummary />
+
+
+					<div class="form-group mt-2">
+						<label for="productname">ชื่อพนักงาน</label>
+						<InputText @bind-Value="Member.Name" type="text" class="form-control mt-2" placeholder=" " />
+						<ValidationMessage For="(()=>Member.Name)" />
+					</div>
+
+					<label class="mt-2">
+						บริษัท:
+						<InputSelect @bind-Value="Member.IDCPN" style="height:30px; width:150px;">
+							<option value="">เลือกบริษัทที่สังกัด</option>
+							<option value="01">Pan Innovation</option>
+							<option value="02">Pl Industry</option>
+							<option value="03">Creative Polymers</option>
+							<option value="04">Chemical Innovation</option>
+
+						</InputSelect>
+						<ValidationMessage For="(()=>Member.NameCompany)" />
+					</label>
+
+				</EditForm>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" @onclick="OnSave">บันทึก</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter]
+	public EventCallback<Employee> GetEmployeeID { get; set; }
+
+	public List<Employee> ListEmployee = new List<Employee>();
+	public List<Company> ListCompany = new List<Company>();
+	private Employee Member = new();
+	private Company MemberCompany = new();
+
+
+
+	protected override async Task OnInitializedAsync()
+	{
+
+		var Members = await employeeService.GetEmployeeAsync();
+		foreach (var Member in Members)
+		{
+			ListEmployee.Add(new Employee().ToUi(Member));
+
+		}
+		var Companys = await companyService.GetEmployeeAsync();
+		foreach (var Company in Companys)
+		{
+			ListCompany.Add(new Company().ToUi(Company));
+		}
+	}
+	private async Task OnSave()
+	{
+
+		string InputName = Member.Name;
+		string InputIDCPN = Member.IDCPN;
+		if (Member == null) return;
+		if (Member.Name == null || Member.IDCPN == null || Member.IDCPN == "")
+		{
+			ShowNotificationErrorInput();
+			return;
+		}
+		if (InputName.Length < 3 || InputName.Length > 30)
+		{
+			ShowNotificationErrorInput();
+			return;
+		}
+		if (Member.Name != null || Member.IDCPN != null)
+		{
+			string strNumber = "00001";
+			int number = int.Parse(strNumber);
+			var employee = ListEmployee.Find(e => e.IDEmployee == e.IDEmployee);
+			var valueemp = 0;
+
+			foreach (var countemp in ListEmployee)
+			{
+				for (int i = 0; i < countemp.IDEmployee; i++)
+				{
+					valueemp = countemp.IDEmployee + 1;
+				}
+			}
+			if (ListEmployee.Count == 0)
+			{
+				valueemp = 1;
+			}
+
+
+			if (Member.IDCPN == "01")
+			{
+				Member.NameCompany = "Pan Innovation";
+			}
+			if (Member.IDCPN == "02")
+			{
+				Member.NameCompany = "Pl Industry";
+			}
+			if (Member.IDCPN == "03")
+			{
+				Member.NameCompany = "Creative Polymers";
+			}
+			if (Member.IDCPN == "04")
+			{
+				Member.NameCompany = "Chemical Innovation";
+			}
+			
+
+			Member.IDMember5 = valueemp.ToString("00000"); // แปลงค่า number จาก int เป็น string ก่อน จึงแปลงเป็น int อีกครั้งเพื่อกำหนดให้กับ Member.IDMember5
+			var AddEmployee = new Employee().ToTable(Member);
+			employeeService.AddNewEmployee(AddEmployee); //บันทึกข้อมูล
+
+			//MemberCompany.Name = Member.NameCompany;
+			//MemberCompany.IDMember5 = Member.IDMember5;
+			//var AddCompany = new Company().ToTable(MemberCompany);
+			//companyService.AddNewCompany(AddCompany); //บันทึกข้อมูล
+
+			Member.Name = "";
+			Member.NameCompany = "";
+
+			Employee CreateListEmployee = new Employee()
+				{
+					IDEmployee = AddEmployee.IDEmployee,
+					Name = AddEmployee.Name,
+					NameCompany = AddEmployee.NameCompany,
+					IDMember5 = AddEmployee.IDMember5,
+				};
+
+			GetEmployeeID.InvokeAsync(CreateListEmployee); //เรียกเมธอด InvokeAsync ของ GetEmployeeIDส่ง object CreateListEmployee เข้าไปในเมธอดนั้นเพื่อทำการดึงข้อมูล
+			ShowNotificationSuccess();
+
+			var Employees = await employeeService.GetEmployeeAsync();
+			ListEmployee.Clear();
+			foreach (var Employee in Employees)
+			{
+				ListEmployee.Add(new Employee().ToUi(Employee));
+			}
+
+
+		}
+	}
+
+	private void ShowNotificationSuccess()
+	{
+		var a = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Success,
+				Summary = "ระบบทำการบันทึกเรียบร้อยแล้ว",
+				Detail = "",
+				Duration = 2700,
+				CloseOnClick = true,
+				Payload = DateTime.Now
+			};
+		notificationservice.Notify(a);
+	}
+	private void ShowNotificationErrorInput()
+	{
+		var a = new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = "กรูณากรอกข้อมูลให้ถูกต้อง",
+				Detail = "",
+				Duration = 2700,
+				CloseOnClick = true,
+				Payload = DateTime.Now
+			};
+		notificationservice.Notify(a);
+	}
+
+}

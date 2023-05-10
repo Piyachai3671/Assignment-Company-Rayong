@@ -1,0 +1,93 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\Assignment.bundle.scp.css",
+      "PackagePath": "staticwebassets\\Assignment.bundle.scp.css"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
+      "PackagePath": "staticwebassets\\css\\open-iconic"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\ICON-LICENSE",
+      "PackagePath": "staticwebassets\\css\\open-iconic"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\README.md",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\README.md"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.eot",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.eot"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.otf",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.otf"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.svg",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.svg"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.ttf",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.ttf"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff",
+      "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.woff"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\img\\fac1.jpg",
+      "PackagePath": "staticwebassets\\img\\fac1.jpg"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\img\\fac2.jpg",
+      "PackagePath": "staticwebassets\\img\\fac2.jpg"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\img\\fac3.jpg",
+      "PackagePath": "staticwebassets\\img\\fac3.jpg"
+    },
+    {
+      "Id": "D:\\Assignment_Rayong\\Assignment\\wwwroot\\img\\fac4.jpg",
+      "PackagePath": "staticwebassets\\img\\fac4.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Assignment.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.Assignment.props",
+      "PackagePath": "build\\Assignment.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.Assignment.props",
+      "PackagePath": "buildMultiTargeting\\Assignment.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.Assignment.props",
+      "PackagePath": "buildTransitive\\Assignment.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
