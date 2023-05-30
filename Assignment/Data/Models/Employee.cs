@@ -10,6 +10,7 @@ namespace Assignment.Data.Models
 
 		public string IDMember5 { get; set; }
 		public string IDCPN { get; set; }
+		public bool SelectEMP { get; set; }
 		public Employee() { }
 
 		public Employee ToUi(TableEmployee tableEmployee) //UI ไปเทเบิล
@@ -26,7 +27,7 @@ namespace Assignment.Data.Models
 
 
 		}
-
+		//เมธอด ToTable ทำหน้าที่แปลงข้อมูลจาก Employee เป็น TableEmployee และส่งคืนค่า TableEmployee ที่ถูกสร้างขึ้น
 		public TableEmployee ToTable(Employee NewEmployee)
 		{
 			return new TableEmployee

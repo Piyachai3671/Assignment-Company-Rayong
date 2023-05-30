@@ -6,28 +6,33 @@
 @inject CompanyService companyService
 <PageTitle>Report</PageTitle>
 <div class="row">
-	@*<div class="col-lg-2">
-	<div class="form-check mb-3 mt-0">
-	<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" @onclick="OnCheckAll">
-	<label class="form-check-label" for="flexCheckDefault">
-	เลือกทั้งหมด
-	</label>
-	</div>
-	</div>*@
+
 	<div class="card">
 		<div class="card-header" style="text-align:center;">
 			<h1>รายงานพนักงาน</h1>
 
 		</div>
 		<div class="card-body">
-			@*<div class="col-lg-3">
-			<label>แสดงรายการ</label>
-			<select style="width:60px;"  @bind="PageSizeSelect5">5
-			<option value="@PageSize5">5</option>
-			<option value="@PageSize10">10</option>
-			<option value="@PageSize20">20</option>
-			</select>
-			</div>*@
+			<div class="col-lg-2">
+				<div class="form-check mb-3 mt-0">
+					<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" @onclick="OnCheckAll">
+					<label class="form-check-label" for="flexCheckDefault">
+						เลือกทั้งหมด
+					</label>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<label>แสดงรายการ</label>
+				<select class="form-control" @bind="PageSizeSelect5" @oninput="UpdateData" style="width=50px;">
+					@foreach (var option in PageSizeOptions)
+					{
+						<option value="@option">@option รายการ</option>
+					}
+					<!-- เพิ่มตามต้องการ -->
+				</select>
+
+
+			</div>
 
 			<RadzenDataGrid FilterMode="FilterMode.Simple"
 							AllowFiltering="true" AllowPaging="true" AllowSorting="true" AllowColumnResize="true"
@@ -39,13 +44,22 @@
 						--rz-grid-cell-color: black;">
 
 				<Columns>
-					@*<RadzenDataGridColumn TItem="Employee " Title="" TextAlign="TextAlign.Center">
-					<Template Context="data">
-					<div class="form-check ms-3">
-					<input class="form-check-input" type="checkbox" @bind="data.ReportCheck" >
-					</div>
-					</Template>
-					</RadzenDataGridColumn>*@
+					<RadzenDataGridColumn TItem="Employee" Title="" TextAlign="TextAlign.Center">
+						<Template Context="data">
+							@*<div class="form-check ms-3">
+							<Input class="form-check-input" type="checkbox" @bind="data.SelectEMP" @onclick="()=>OnSelect(data)">
+							</div>*@
+							<div class="form-check ms-3">
+								<InputCheckbox class="form-check-input" type="checkbox" @bind-Value="data.SelectEMP" @onclick="()=>OnSelect(data)" />
+							</div>
+							@*<div class="form-check ms-3">
+							<input class="form-check-input" type="checkbox" @bind="data.SelectEMP" @onclick="()=>OnSelect(data)">
+							</div>
+							<div class="form-check ms-3">
+							<input class="form-check-input" type="checkbox" @bind="data.SelectEMP" @onclick="()=>OnSelect(data)">
+							</div>*@
+						</Template>
+					</RadzenDataGridColumn>
 
 					@*<RadzenDataGridColumn TItem="Employee " Title="ดูรายละเอียดเพิ่มเติม" TextAlign="TextAlign.Center">
 					<Template Context="data">
@@ -76,42 +90,113 @@
 		</div>
 
 	</div>
+	<div class="card mt-3" style="padding:0px;">
+
+		<div class="card-body">
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr class="table-warning">
+						
+						<th>
+							รหัสพนักงานน
+						</th>
+						<th>
+							ชื่อพนักงาน
+						</th>
+						<th>
+							บริษัท
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var emp in ListEmployee.FindAll(e => e.SelectEMP == true))
+					{
+						<tr>
+							<td>
+								@emp.IDCPN
+							</td>
+							<td>
+								@emp.Name
+							</td>
+							
+							<td>
+								@emp.NameCompany
+							</td>
+						</tr>
+					}
+
+				</tbody>
+				<tfoot>
+					<tr>
+						<td></td>
+						<td>รวมทั้งหมด : @ListEmployee.FindAll(e=>e.SelectEMP==true).Count() คน</td>
+						<td></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+	
 
 </div>
 @code {
+	public List<int> PageSizeOptions = new List<int> { 5, 10, 20 };
+
 	public List<Employee> ListEmployee = new List<Employee>();
 	public List<Company> ListCompany = new List<Company>();
 	public List<string> ListCompanyName;
 	protected override async Task OnInitializedAsync()
 	{
+		await GetData(); // เรียกใช้เมธอด GetData() เพื่อรับข้อมูลพนักงานและบริษัทใหม่
+
+		ListCompanyName = ListCompany.Select(c => c.Name).ToList();
+	}
+
+	private async Task GetData()
+	{
 		var Members = await employeeService.GetEmployeeAsync();
-		foreach (var Member in Members)
-		{
-			ListEmployee.Add(new Employee().ToUi(Member));
-		}
+		ListEmployee = Members.Select(member => new Employee().ToUi(member)).ToList();
 
 		var Companys = await companyService.GetEmployeeAsync();
-		foreach (var Company in Companys)
-		{
-			ListCompany.Add(new Company().ToUi(Company));
-		}
-		ListCompanyName = ListCompany.Select(c => c.Name).ToList();
-
+		ListCompany = Companys.Select(company => new Company().ToUi(company)).ToList();
 	}
+	private async Task UpdateData(ChangeEventArgs args)
+	{
+		PageSizeSelect5 = int.Parse(args.Value.ToString());
+		await GetData();
+		StateHasChanged();
+	}
+	//ในกรณีนี้ เราใช้ @oninput attribute และ UpdateData() รับอาร์กิวเมนต์ ChangeEventArgs ซึ่งเป็นอาร์กิวเมนต์ที่ส่งมาจากการเปลี่ยนค่าใน dropdown จากนั้นเราอัพเดตค่า PageSizeSelect5 จากค่าใหม่ที่ได้รับจาก dropdown และเรียกใช้ GetData() เพื่อรับข้อมูลพนักงานและบริษัทใหม่ สุดท้ายเราเรียกใช้ StateHasChanged() เพื่ออัพเดตข้อมูลในตารางให้แสดงข้อมูลใหม่ทันทีหลังจากอัพเดตข้อมูลใหม่
 	IEnumerable<string> selectedCompany;
 	int PageSizeSelect5 = 5;
+
+
+
 	private bool CheckAll = false;
 	private void OnCheckAll()
 	{
 
 		CheckAll = !CheckAll;
-		if (CheckAll == true)
+		foreach (var emp in ListEmployee)
 		{
+			if (CheckAll == true)
+			{
+				emp.SelectEMP = true;
 
-		}
-		if (CheckAll == false)
-		{
-
+			}
+			if (CheckAll == false)
+			{
+				emp.SelectEMP = false;
+			}
 		}
 	}
+	private void OnSelect(Employee ID)
+	{
+
+		ID.SelectEMP = !ID.SelectEMP;
+		Console.WriteLine(ID.SelectEMP);
+
 	}
+
+
+}
